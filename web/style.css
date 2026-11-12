@@ -1,0 +1,96 @@
+/* Bureau for Chess Narration.
+   After the manner of bureauforlistening.com: white paper, Times, small monospace labels, a great deal of room. */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; font-weight: normal; }
+:root { font: 16px/1.5 sans-serif; --ink: #141414; --blue: #B3D4FC; --mono: monospace; --glyph: "Apple Symbols", "Segoe UI Symbol", "Noto Sans Symbols 2", "DejaVu Sans", "Arial Unicode MS", serif; }
+html { background: #fff; }
+body { font-family: 'Times New Roman', Times, serif; color: var(--ink); }
+::selection { background: var(--blue); }
+a { color: var(--ink); text-decoration: none; }
+p { font-size: 1.3rem; line-height: 1.3; margin-bottom: .5rem; }
+p a, .u { text-decoration: underline; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+h1 { font-size: 5rem; letter-spacing: -.03em; line-height: 1; margin: 0 0 2rem; }
+h6, .label, .top-bar *, nav#menu a, nav#menu input, .controls button, table.sb th { font: .65rem/1.5 var(--mono); text-transform: uppercase; letter-spacing: .05em; }
+h6 { margin: 0 0 .5rem; }
+h6.caption { margin: .5rem 0; color: gray; }
+.gap { height: 9rem; } .gap.s { height: 4rem; }
+
+.top-bar { position: fixed; inset: 0 0 auto 0; z-index: 20; background: #fff; display: flex; justify-content: space-between; padding: 1rem 2rem .5rem; border-bottom: 1px solid silver; height: 2.5rem; }
+.top-bar a:hover, .top-bar button:hover { text-decoration: underline; }
+
+nav#menu { border-right: 1px solid silver; width: 20%; position: fixed; top: 0; left: 0; height: 100vh; padding: 3.8rem 2rem 5rem; overflow-y: auto; background: #fff; z-index: 10; }
+nav#menu a { display: block; margin: .75em 0 .25em; }
+nav#menu a:not(.plain):hover { color: blue; }
+nav#menu a.plain { margin-top: 2em; cursor: default; }
+nav#menu a.sub { margin: 0 0 .25em 1em; color: gray; }
+nav#menu a.sub.on { color: var(--ink); }
+nav#menu a.sub.on::before { content: "→ "; }
+nav#menu input { width: calc(100% - 1em); margin: 0 0 .5em 1em; border: 0; border-bottom: 1px solid silver; background: transparent; outline: 0; text-transform: none; }
+nav#menu a.sub small { font: inherit; display: block; color: silver; }
+
+.main-container { width: 80%; margin-left: 20%; padding: 2rem; margin-top: 2.5rem; }
+.row { display: flex; max-width: 100%; }
+.column { margin: 0 2rem 2rem 0; width: 100%; min-width: 0; }
+
+/* ---- the diagram */
+.figure { width: min(100%, 68vh); }
+.board { position: relative; aspect-ratio: 1; border: 1px solid var(--ink); transition: transform .9s ease; }
+.squares { position: absolute; inset: 0; display: grid; grid-template: repeat(8, 1fr) / repeat(8, 1fr); }
+.squares div.d { background: #ececec; }
+.squares div.hl { background: var(--blue); }
+.squares div.chk { animation: chk 1.2s 2; }
+@keyframes chk { 50% { background: var(--ink); } }
+.lines { position: absolute; inset: 0; width: 100%; height: 100%; fill: none; stroke: var(--ink); stroke-width: .25; opacity: .45; pointer-events: none; }
+.bases { display: none; }
+.pc { position: absolute; width: 12.5%; height: 12.5%; display: grid; place-items: center; font-family: var(--glyph); font-size: calc(var(--sq, 60px) * .82); line-height: 1; transition: left .5s ease, top .5s ease, opacity .4s; }
+.pc span { display: block; transition: transform .9s ease; }
+.pc.gone { opacity: 0; }
+body.baseball .figure { padding: 0; }
+body.baseball .board { transform: rotate(45deg) scale(.68); }
+body.baseball .pc span { transform: rotate(-45deg); }
+body.baseball .lines { display: none; }
+body.baseball .bases { display: block; }
+.bases i { position: absolute; width: 4%; height: 4%; border: 1px solid var(--ink); background: #fff; }
+.bases i:nth-child(1) { right: -7%; bottom: -7%; background: var(--ink); } .bases i:nth-child(2) { right: -7%; top: -7%; }
+.bases i:nth-child(3) { left: -7%; top: -7%; } .bases i:nth-child(4) { left: -7%; bottom: -7%; }
+
+.controls { display: flex; flex-wrap: wrap; gap: .2rem 1.2rem; margin-top: .75rem; }
+.controls button { text-decoration: underline; }
+.controls button:hover { color: blue; }
+.momentum { position: relative; height: 2.2rem; margin-top: .75rem; border-bottom: 1px solid silver; cursor: pointer; }
+.momentum svg { width: 100%; height: 100%; display: block; }
+.momentum .future { opacity: .22; }
+.momentum .needle { position: absolute; top: 0; bottom: 0; width: 1px; background: blue; transition: left .3s; }
+
+/* ---- the call */
+.call { min-height: 15rem; }
+.call p { font-size: 2.3rem; line-height: 1.12; letter-spacing: -.015em; margin-bottom: 1rem; animation: in .5s; }
+.call p.loud { font-size: 4rem; letter-spacing: -.03em; line-height: 1; }
+.call p.aside { font-size: 1.3rem; line-height: 1.3; letter-spacing: 0; color: gray; }
+@keyframes in { from { opacity: 0; } }
+table.sb { border-collapse: collapse; width: 100%; margin: 1.5rem 0 .5rem; font: .8rem/1.4 var(--mono); }
+table.sb th { text-align: center; color: gray; padding: .2rem .3rem; }
+table.sb td { border-top: 1px solid silver; padding: .25rem .3rem; text-align: center; }
+table.sb td:first-child, table.sb th:first-child { text-align: left; }
+table.sb td.now { background: var(--blue); }
+.transcript { margin-top: 2rem; max-height: 22rem; overflow-y: auto; }
+.transcript button { display: grid; grid-template-columns: 3.5rem 4.5rem 1fr; gap: .5rem; width: 100%; text-align: left; padding: .3rem 0; border-top: 1px solid #e4e4e4; font-size: 1rem; line-height: 1.3; }
+.transcript button:hover { color: blue; }
+.transcript span:nth-child(-n+2) { font: .65rem/2 var(--mono); color: gray; }
+
+.exercise p { font-size: 1.6rem; line-height: 1.32; white-space: pre-wrap; max-width: 38em; margin-bottom: 1.2rem; }
+.switch button { text-decoration: underline; color: gray; } .switch button.on { color: var(--ink); text-decoration: none; }
+
+@media (max-width: 760px) {
+  h1 { font-size: 2.4rem; } p { font-size: 1rem; }
+  nav#menu { width: 100%; transform: translateX(-100%); transition: transform .3s; padding: 3.8rem 1rem 2rem; }
+  nav#menu.is-active { transform: none; }
+  .main-container { width: 100%; margin-left: 0; padding: 2rem 1rem; }
+  .row { display: block; } .column { margin-right: 0; }
+  .top-bar { padding: .7rem 1rem; height: auto; } .top-bar p:last-child { display: none; }
+  .call { min-height: 0; } .call p { font-size: 1.6rem; } .call p.loud { font-size: 2.4rem; }
+  .exercise p { font-size: 1.2rem; } .gap { height: 4rem; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+.call p { overflow-wrap: anywhere; }
+body.baseball .figure h6.caption { margin-top: 1.6rem; }
