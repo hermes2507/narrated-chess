@@ -36,5 +36,6 @@ rain, sunburst). Right pages: the game retold in the manner of a different autho
 ## Credits and licence
 - Website design inspired by the [Bureau for Listening](https://bureauforlistening.com). Not affiliated.
 - Method after Raymond Queneau, *Exercices de style* (1947). Game scores from public archives, mainly pgnmentor.com.
-- **Code:** MIT License (`LICENSE`). **Book text and PDFs:** © 2026 Santiago Rentería, all rights reserved.
-  `NOTICE.md` says exactly which files fall under each.
+- **Copy it, remix it, pass it on.** Code: MIT License (`LICENSE`). Book text and PDFs:
+  [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), so anything is allowed, even selling, as long as you credit
+  Santiago Rentería and say what you changed. `NOTICE.md` has the details and a ready-made credit line.

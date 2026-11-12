@@ -388,8 +388,11 @@ def front_matter(b, book):
     st = ParagraphStyle('n', fontName='Serif', fontSize=8.6, leading=12.4, textColor=INK)
     paras = [Paragraph(t, st) for t in [
         "<font name='SerifB'>Play by Play</font><br/>One Hundred Chess Games, One Hundred Voices",
-        f"Copyright © {YEAR} {AUTHOR}. All rights reserved. No part of this book may be reproduced in any form "
-        "without written permission from the author, except for brief quotations in reviews.",
+        f"© {YEAR} {AUTHOR}. This book is free to copy. It is licensed under Creative Commons Attribution 4.0 "
+        "International (CC BY 4.0): you may copy, share, translate, adapt and build on it, for any purpose, even "
+        f"commercially, provided you credit {AUTHOR} as its originator, link to the licence and say what you changed. "
+        "creativecommons.org/licenses/by/4.0",
+        "Please pass it on. Ideas travel further when people know where they came from.",
         f"Idea, concept and editorial direction by {AUTHOR}. Written, programmed and typeset in co-creation "
         "with Claude Code (Claude Fable 5.2, by Anthropic).",
         "The hundred games were really played. Their scores, which are matters of record, are reproduced complete "
@@ -402,7 +405,7 @@ def front_matter(b, book):
         "dialogue, thoughts and feelings given to them are invented, and no word put in a player's mouth should be taken as a quotation.",
         "The method is borrowed from Raymond Queneau's <font name='SerifI'>Exercices de style</font> (1947). "
         "The companion website, the Bureau for Chess Narration, takes its look from the Bureau for Listening (bureauforlistening.com).",
-        "The software that built this book is free under the MIT License. The text and design of the book are not.",
+        "The software that built this book is free under the MIT License: github.com/hermes2507/narrated-chess",
         "Set in Baskerville, Didot and Courier New.",
         f"First edition, {YEAR}."]]
     hs = [p.wrap(b.width() - 40, 500)[1] for p in paras]
