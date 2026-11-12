@@ -1,12 +1,87 @@
-/* Bureau for Chess Narration — one hundred historic games, called aloud as sport. */
+/* Bureau for Chess Narration — one hundred historic games, called aloud as sport. In English and Spanish. */
 (() => {
 const G = window.GAMES, $ = s => document.querySelector(s);
 const content = $('#content'), toc = $('#toc'), menu = $('#menu');
 const GLY = { K: '♔', Q: '♕', R: '♖', B: '♗', N: '♘', P: '♙', k: '♚', q: '♛', r: '♜', b: '♝', n: '♞', p: '♟' };
 const RES = { '1-0': '1–0', '0-1': '0–1', '1/2-1/2': '½–½' };
-const S = { g: null, step: 0, sport: 's', playing: false, speed: 1, voice: false, crowd: false, timer: null, pos: [] };
+const S = { g: null, step: 0, sport: 's', playing: false, speed: 1, voice: false, crowd: false, timer: null, pos: [], lang: 'en' };
 const pad = n => String(n).padStart(3, '0');
 const esc = t => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+
+/* ---------- the books. Keep EDITION in step with build/make_pdf.py */
+const EDITION = 1, PAGES = 208;
+const BOOK = { en: { file: 'Play_by_Play.pdf', title: 'Play by Play' }, es: { file: 'Jugada_a_jugada.pdf', title: 'Jugada a jugada' } };
+
+/* ---------- words */
+const U = {
+  en: {
+    toc: 'Table of contents', bureau: 'Bureau for Chess Narration', tagline: 'For all on the board: narrate!',
+    front: 'Front page', books: `The book, ${['first', 'second', 'third'][EDITION - 1] || EDITION + 'th'} edition`, voices: 'Voices',
+    football: 'Football commentary', baseball: 'Baseball commentary', hundred: 'The hundred games', search: 'search',
+    bookLink: { en: 'Play by Play — English (PDF)', es: 'Jugada a jugada — Spanish (PDF)' },
+    edition: n => `${['First', 'Second', 'Third'][n - 1] || n + 'th'} edition`,
+    frontPage: g => `
+      <div class="row"><div class="column"><p>A FRONT PAGE BROADCAST.</p><p>THE SOUND OF A QUEEN BEING LEFT ON f6, CALLED AS A GOAL.</p></div>
+        <div class="column"><p><a href="#2">Listen: ${esc(g.nick)}, ${esc(g.site)}, ${g.year}.</a></p></div></div>
+      <div class="gap"></div>
+      <div class="row"><div class="column">
+        <p>This is our front page.</p><p>&nbsp;</p><p>We thank you for finding it.</p><p>&nbsp;</p>
+        <p>The Bureau narrates historic chess games as if they were sport. A football announcer and a baseball announcer take turns in the booth. Nobody in the booth has been told that it is chess.</p><p>&nbsp;</p>
+        <p>We have one hundred ongoing games. Explore them under ‘table of contents’.</p><p>&nbsp;</p>
+        <p>Each game has also been written down once, in the manner of a different author, as an exercise in style. The exercises are collected in a book, with the scores set as concrete poetry. The book comes in English and in Spanish.</p>`,
+    download: `Download the book (PDF, cover to cover, ${PAGES} pages):`,
+    fixture: "Today's fixture",
+    rules: 'Shots are checks. Tackles and hits are captures. Possession is mobility. Runs are material. The patter is invented; the moves are not.',
+    credits: 'Idea and concept by Sergio Santiago Rentería Aguilar, co-created with Claude Code (Claude Fable 5.2); Spanish version with Claude Opus 5.5. Design after the <a class="u" href="https://bureauforlistening.com">Bureau for Listening</a>. Free to copy and adapt, with credit: book text under <a class="u" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>, code under the MIT License.',
+    game: 'Game', play: 'Play', pause: 'Pause', again: 'Play again', back: '← Back', fwd: 'Forward →', first: 'From the start',
+    speed: 'Speed', voice: 'Voice', crowd: 'Crowd', on: 'on', off: 'off', fb: 'Football', bb: 'Baseball',
+    before: 'before the start', final: 'final', fig: 'Fig.', after: 'Position after', lineup: 'The teams line up',
+    pitch: 'A football pitch, seen from above.', diamond: 'A baseball diamond, seen from above.',
+    sbS: ['Goals', 'Possession', 'Shots on target', 'Tackles won'], sbB: ['R', 'H', 'K', 'W'],
+    sbCap: 'R: material won. H: captures. K: checks. W: the king, which is the only thing that counts.',
+    exHead: (n, a) => `Exercise in style No. ${n} — the same game, in the manner of ${esc(a)}`,
+    exCap: a => `A pastiche written for the Bureau. It may borrow a famous phrase, as parody; it was not written by ${esc(a)}. Players' words and thoughts are invented.`,
+    prev: '← Previous game', next: 'Next game →', bookPage: 'Download the book (PDF, with cover):'
+  },
+  es: {
+    toc: 'Índice', bureau: 'Oficina de Narración Ajedrecística', tagline: '¡Todos al tablero: a narrar!',
+    front: 'Portada', books: `El libro, ${['primera', 'segunda', 'tercera'][EDITION - 1] || EDITION + '.ª'} edición`, voices: 'Voces',
+    football: 'Narración de fútbol', baseball: 'Narración de béisbol', hundred: 'Las cien partidas', search: 'buscar',
+    bookLink: { en: 'Play by Play — en inglés (PDF)', es: 'Jugada a jugada — en español (PDF)' },
+    edition: n => `${['Primera', 'Segunda', 'Tercera'][n - 1] || n + '.ª'} edición`,
+    frontPage: g => `
+      <div class="row"><div class="column"><p>UNA TRANSMISIÓN DE PORTADA.</p><p>EL SONIDO DE UNA DAMA ABANDONADA EN f6, CANTADO COMO UN GOL.</p></div>
+        <div class="column"><p><a href="#2">Escuche: ${esc(g.nick)}, ${esc(g.site)}, ${g.year}.</a></p></div></div>
+      <div class="gap"></div>
+      <div class="row"><div class="column">
+        <p>Esta es nuestra portada.</p><p>&nbsp;</p><p>Le agradecemos que la haya encontrado.</p><p>&nbsp;</p>
+        <p>La Oficina narra partidas históricas de ajedrez como si fueran deporte. Un narrador de fútbol y un cronista de béisbol se turnan en la cabina. A nadie en la cabina le han dicho que es ajedrez.</p><p>&nbsp;</p>
+        <p>Tenemos cien partidas en curso. Explórelas en «índice».</p><p>&nbsp;</p>
+        <p>Cada partida se ha escrito también una vez, a la manera de un autor distinto, como ejercicio de estilo. Los ejercicios están reunidos en un libro, con las anotaciones compuestas como poesía concreta. El libro existe en español y en inglés.</p>`,
+    download: `Descargue el libro (PDF, de cubierta a cubierta, ${PAGES} páginas):`,
+    fixture: 'El partido de hoy',
+    rules: 'Los tiros son jaques. Las entradas y los hits son capturas. La posesión es movilidad. Las carreras son material. La charla es inventada; las jugadas, no.',
+    credits: 'Idea y concepto de Sergio Santiago Rentería Aguilar, en cocreación con Claude Code (Claude Fable 5.2); versión española con Claude Opus 5.5. Diseño a partir del <a class="u" href="https://bureauforlistening.com">Bureau for Listening</a>. Libre de copiar y adaptar, citando la fuente: el texto del libro bajo <a class="u" href="https://creativecommons.org/licenses/by/4.0/deed.es">CC BY 4.0</a>, el código bajo licencia MIT.',
+    game: 'Partida', play: 'Reproducir', pause: 'Pausa', again: 'Otra vez', back: '← Atrás', fwd: 'Adelante →', first: 'Desde el inicio',
+    speed: 'Velocidad', voice: 'Voz', crowd: 'Público', on: 'sí', off: 'no', fb: 'Fútbol', bb: 'Béisbol',
+    before: 'antes del inicio', final: 'final', fig: 'Fig.', after: 'Posición tras', lineup: 'Los equipos se alinean',
+    pitch: 'Un campo de fútbol, visto desde arriba.', diamond: 'Un diamante de béisbol, visto desde arriba.',
+    sbS: ['Goles', 'Posesión', 'Tiros a puerta', 'Entradas ganadas'], sbB: ['C', 'H', 'K', 'G'],
+    sbCap: 'C: carreras, el material ganado. H: capturas. K: jaques. G: el rey, que es lo único que cuenta.',
+    exHead: (n, a) => `Ejercicio de estilo n.º ${n} — la misma partida, a la manera de ${esc(a)}`,
+    exCap: a => `Un pastiche escrito para la Oficina, en su versión española. Puede tomar prestada una frase célebre, como parodia; no lo escribió ${esc(a)}. Las palabras y los pensamientos de los jugadores son inventados.`,
+    prev: '← Partida anterior', next: 'Partida siguiente →', bookPage: 'Descargue el libro (PDF, con cubierta):'
+  }
+};
+const t = k => U[S.lang][k];
+const ES = () => S.lang === 'es' && window.GAMES_ES;
+const X = g => ES() ? window.GAMES_ES[g.id - 1] : g;                       // nick, site, event, opening, author, exercise
+const PIECE_ES = { K: 'R', Q: 'D', R: 'T', B: 'A', N: 'C' };
+const sanES = s => (PIECE_ES[s[0]] ? PIECE_ES[s[0]] + s.slice(1) : s).replace(/=([QRBN])/, (_, p) => '=' + PIECE_ES[p]);
+const san = s => S.lang === 'es' ? sanES(s) : s;
+const lineAt = (g, i) => ES() ? window.GAMES_ES[g.id - 1][S.sport][i] : g.plies[i][S.sport === 's' ? 6 : 7];
+const bookLinks = () => [S.lang, S.lang === 'es' ? 'en' : 'es'].map(l =>
+  `<a href="${BOOK[l].file}" download>${esc(t('bookLink')[l])}, ${esc(U[S.lang].edition(EDITION).toLowerCase())}.</a>`).join('<br>');
 
 /* ---------- positions: replay the UCI moves once per game */
 function positions(g) {
@@ -36,8 +111,8 @@ function positions(g) {
 /* ---------- table of contents */
 function buildToc(filter = '') {
   const f = filter.toLowerCase();
-  toc.innerHTML = G.filter(g => !f || `${g.nick} ${g.white} ${g.black} ${g.site} ${g.year} ${g.author} ${g.opening}`.toLowerCase().includes(f))
-    .map(g => `<a class="sub${S.g === g ? ' on' : ''}" href="#${g.id}">${pad(g.id)} ${esc(g.nick)}<small>${esc(g.ws)}–${esc(g.bs)}, ${g.year}</small></a>`).join('');
+  toc.innerHTML = G.filter(g => { const x = X(g); return !f || `${x.nick} ${g.nick} ${g.white} ${g.black} ${x.site} ${g.year} ${x.author} ${x.opening}`.toLowerCase().includes(f); })
+    .map(g => `<a class="sub${S.g === g ? ' on' : ''}" href="#${g.id}">${pad(g.id)} ${esc(X(g).nick)}<small>${esc(g.ws)}–${esc(g.bs)}, ${g.year}</small></a>`).join('');
 }
 $('#search').addEventListener('input', e => buildToc(e.target.value));
 $('#menu-trigger').onclick = () => menu.classList.toggle('is-active');
@@ -46,38 +121,33 @@ menu.querySelectorAll('[data-sport]').forEach(a => a.onclick = e => { e.preventD
 /* ---------- pages */
 function front() {
   stop(); S.g = null; buildToc($('#search').value);
-  const g = G[Math.floor(Math.random() * G.length)];
+  const g = G[Math.floor(Math.random() * G.length)], x = X(g);
   content.innerHTML = `
   <div class="gap"></div>
-  <div class="row"><div class="column"><p>A FRONT PAGE BROADCAST.</p><p>THE SOUND OF A QUEEN BEING LEFT ON f6, CALLED AS A GOAL.</p></div>
-    <div class="column"><p><a href="#2">Listen: The Immortal Game, London, 1851.</a></p></div></div>
-  <div class="gap"></div>
-  <div class="row"><div class="column">
-    <p>This is our front page.</p><p>&nbsp;</p><p>We thank you for finding it.</p><p>&nbsp;</p>
-    <p>The Bureau narrates historic chess games as if they were sport. A football announcer and a baseball announcer take turns in the booth. Nobody in the booth has been told that it is chess.</p><p>&nbsp;</p>
-    <p>We have one hundred ongoing games. Explore them under ‘table of contents’.</p><p>&nbsp;</p>
-    <p>Each game has also been written down once, in the manner of a different author, as an exercise in style. The exercises are collected in a book, with the scores set as concrete poetry.</p>
-    <p><a href="Play_by_Play.pdf" download>Download the book (PDF, cover to cover, 208 pages).</a></p>
+  ${t('frontPage')({ ...G[1], ...X(G[1]) })}
+    <p>${t('download')}</p><p>${bookLinks()}</p>
   </div><div class="column"></div></div>
   <div class="gap"></div>
-  <h1>Today's fixture</h1>
-  <p><a href="#${g.id}">${esc(g.nick)}. ${esc(g.white)} — ${esc(g.black)}, ${esc(g.site)}, ${g.year}.</a></p>
+  <h1>${t('fixture')}</h1>
+  <p><a href="#${g.id}">${esc(x.nick)}. ${esc(g.white)} — ${esc(g.black)}, ${esc(x.site)}, ${g.year}.</a></p>
   <div class="gap"></div>
-  <h6 class="caption">Shots are checks. Tackles and hits are captures. Possession is mobility. Runs are material. The patter is invented; the moves are not.</h6>
+  <h6 class="caption">${t('rules')}</h6>
   <div class="gap s"></div>
-  <h6 class="caption">Idea and concept by Sergio Santiago Rentería Aguilar, co-created with Claude Code (Claude Fable 5.2). Design after the <a class="u" href="https://bureauforlistening.com">Bureau for Listening</a>. Free to copy and adapt, with credit: book text under <a class="u" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>, code under the MIT License.</h6>`;
-  document.title = 'Bureau for Chess Narration';
+  <h6 class="caption">${t('credits')}</h6>`;
+  document.title = t('bureau');
 }
 
-function gamePage(g) {
-  stop(); S.g = g; S.step = 0; S.pos = positions(g); buildToc($('#search').value);
-  document.title = `${g.nick} — Bureau for Chess Narration`;
+function gamePage(g, keep = false) {
+  const step = keep ? S.step : 0;
+  stop(); S.g = g; S.step = step; S.pos = positions(g); buildToc($('#search').value);
+  const x = X(g);
+  document.title = `${x.nick} — ${t('bureau')}`;
   let sq = '';
   for (let r = 7; r >= 0; r--) for (let f = 0; f < 8; f++) sq += `<div class="${(r + f) % 2 ? '' : 'd'}" data-s="${r * 8 + f}"></div>`;
   content.innerHTML = `
-  <h6>Game ${pad(g.id)} — ${esc(g.site)}, ${g.year} — ${esc(g.event)}</h6>
-  <h1>${esc(g.nick)}</h1>
-  <p>${esc(g.white)} — ${esc(g.black)}. ${esc(g.opening)}. ${RES[g.result]}.</p>
+  <h6>${t('game')} ${pad(g.id)} — ${esc(x.site)}, ${g.year} — ${esc(x.event)}</h6>
+  <h1>${esc(x.nick)}</h1>
+  <p>${esc(g.white)} — ${esc(g.black)}. ${esc(x.opening)}. ${RES[g.result]}.</p>
   <div class="gap s"></div>
   <div class="row">
     <div class="column"><div class="figure">
@@ -87,11 +157,11 @@ function gamePage(g) {
       <h6 class="caption" id="figcap"></h6>
       <div class="momentum" id="momentum"></div>
       <div class="controls">
-        <button id="play">Play</button><button id="back">← Back</button><button id="fwd">Forward →</button><button id="first">From the start</button>
-        <button id="speed">Speed 1×</button><button id="voice">Voice: off</button><button id="crowd">Crowd: off</button>
+        <button id="play"></button><button id="back">${t('back')}</button><button id="fwd">${t('fwd')}</button><button id="first">${t('first')}</button>
+        <button id="speed"></button><button id="voice"></button><button id="crowd"></button>
       </div></div></div>
     <div class="column">
-      <h6 class="switch"><button data-sp="s">Football</button> / <button data-sp="b">Baseball</button> &nbsp; <span id="stamp"></span></h6>
+      <h6 class="switch"><button data-sp="s">${t('fb')}</button> / <button data-sp="b">${t('bb')}</button> &nbsp; <span id="stamp"></span></h6>
       <div class="call" id="call"></div>
       <div id="score"></div>
       <div class="transcript" id="transcript"></div>
@@ -99,14 +169,14 @@ function gamePage(g) {
   </div>
   <div class="gap"></div>
   <div class="exercise">
-    <h6>Exercise in style No. ${g.id} — the same game, in the manner of ${esc(g.author)}</h6>
+    <h6>${t('exHead')(g.id, x.author)}</h6>
     <div class="gap s"></div>
-    ${g.exercise.split('\n\n').map(t => `<p>${esc(t)}</p>`).join('')}
-    <h6 class="caption">A pastiche written for the Bureau. It may borrow a famous phrase, as parody; it was not written by ${esc(g.author)}. Players' words and thoughts are invented.</h6>
+    ${x.exercise.split('\n\n').map(p => `<p>${esc(p)}</p>`).join('')}
+    <h6 class="caption">${t('exCap')(x.author)}</h6>
   </div>
   <div class="gap s"></div>
-  <p><a href="Play_by_Play.pdf" download>Download the book (PDF, with cover).</a></p>
-  <p>${g.id > 1 ? `<a href="#${g.id - 1}">← Previous game</a> &nbsp; ` : ''}${g.id < 100 ? `<a href="#${g.id + 1}">Next game →</a>` : ''}</p>
+  <p>${t('bookPage')}<br>${bookLinks()}</p>
+  <p>${g.id > 1 ? `<a href="#${g.id - 1}">${t('prev')}</a> &nbsp; ` : ''}${g.id < 100 ? `<a href="#${g.id + 1}">${t('next')}</a>` : ''}</p>
   <div class="gap"></div>`;
   // momentum bars
   const N = g.plies.length;
@@ -120,21 +190,23 @@ function gamePage(g) {
   $('#crowd').onclick = () => { S.crowd = !S.crowd; crowd.set(S.crowd); ui(); };
   content.querySelectorAll('[data-sp]').forEach(b => b.onclick = () => setSport(b.dataset.sp));
   new ResizeObserver(() => $('#board') && $('#board').style.setProperty('--sq', $('#board').clientWidth / 8 + 'px')).observe($('#board'));
-  window.scrollTo(0, 0);
+  if (!keep) window.scrollTo(0, 0);
   render(false);
 }
 
 /* ---------- rendering one step. step 0 = intro, 1..N = plies, N+1 = sign-off */
-const maxStep = () => S.g.plies.length + (S.g.outro[S.sport] ? 1 : 0);
+const outro = () => X(S.g).outro[S.sport];
+const maxStep = () => S.g.plies.length + (outro() ? 1 : 0);
 function stamp(i, N) {            // i = ply index
   if (S.sport === 's') return Math.max(1, Math.ceil((i + 1) / N * 90)) + "'";
-  const inn = Math.min(9, Math.floor(i * 9 / N) + 1); return (i % 2 ? 'Bot ' : 'Top ') + inn;
+  const inn = Math.min(9, Math.floor(i * 9 / N) + 1);
+  return (i % 2 ? (S.lang === 'es' ? 'Baja ' : 'Bot ') : (S.lang === 'es' ? 'Alta ' : 'Top ')) + inn;
 }
 function textAt(step) {
   const g = S.g, N = g.plies.length;
-  if (step === 0) return g.intro[S.sport];
-  if (step > N) return g.outro[S.sport];
-  return g.plies[step - 1][S.sport === 's' ? 6 : 7];
+  if (step === 0) return X(g).intro[S.sport];
+  if (step > N) return outro();
+  return lineAt(g, step - 1);
 }
 function render(animate = true) {
   const g = S.g, N = g.plies.length, k = Math.min(S.step, N), ply = k ? g.plies[k - 1] : null;
@@ -159,28 +231,28 @@ function render(animate = true) {
   // stats so far
   const st = { sh: [0, 0], tk: [0, 0], runs: [Array(9).fill(0), Array(9).fill(0)] };
   for (let i = 0; i < k; i++) { const p = g.plies[i], c = i % 2; if (p[2].includes('c')) st.sh[c]++; if (p[3]) { st.tk[c]++; st.runs[c][Math.min(8, Math.floor(i * 9 / N))] += p[3]; } }
-  const over = S.step >= N && (ply && ply[2].includes('m') || S.step > N || !g.outro[S.sport]);
+  const over = S.step >= N && (ply && ply[2].includes('m') || S.step > N || !outro());
   const won = over ? (g.result === '1-0' ? 0 : g.result === '0-1' ? 1 : -1) : -1;
-  $('#figcap').textContent = `Fig. ${g.id}. ` + (k ? `Position after ${Math.ceil(k / 2)}${k % 2 ? '.' : '…'}${ply[0]}` : 'The teams line up') + `. ${S.sport === 's' ? 'A football pitch' : 'A baseball diamond'}, seen from above.`;
-  $('#stamp').textContent = k ? `— ${stamp(k - 1, N)}${over ? ' — final' : ''}` : '— before the start';
+  $('#figcap').textContent = `${t('fig')} ${g.id}. ` + (k ? `${t('after')} ${Math.ceil(k / 2)}${k % 2 ? '.' : '…'}${san(ply[0])}` : t('lineup')) + `. ${S.sport === 's' ? t('pitch') : t('diamond')}`;
+  $('#stamp').textContent = k ? `— ${stamp(k - 1, N)}${over ? ' — ' + t('final') : ''}` : '— ' + t('before');
   if (S.sport === 's') {
-    const poss = ply ? ply[4] : 50;
-    $('#score').innerHTML = `<table class="sb"><tr><th></th><th>Goals</th><th>Possession</th><th>Shots on target</th><th>Tackles won</th></tr>` +
+    const poss = ply ? ply[4] : 50, h = t('sbS');
+    $('#score').innerHTML = `<table class="sb"><tr><th></th>${h.map(x => `<th>${x}</th>`).join('')}</tr>` +
       [0, 1].map(c => `<tr><td>${esc(c ? g.bs : g.ws)}</td><td>${won === c ? 1 : 0}</td><td>${c ? 100 - poss : poss}%</td><td>${st.sh[c]}</td><td>${st.tk[c]}</td></tr>`).join('') + `</table>`;
   } else {
-    const inn = k ? Math.min(8, Math.floor((k - 1) * 9 / N)) : -1;
-    $('#score').innerHTML = `<table class="sb"><tr><th></th>${[1,2,3,4,5,6,7,8,9].map(n => `<th>${n}</th>`).join('')}<th>R</th><th>H</th><th>K</th><th></th></tr>` +
-      [0, 1].map(c => `<tr><td>${esc(c ? g.bs : g.ws)}</td>${st.runs[c].map((r, n) => `<td class="${n === inn ? 'now' : ''}">${n <= inn ? r : ''}</td>`).join('')}<td>${st.runs[c].reduce((a, b) => a + b, 0)}</td><td>${st.tk[c]}</td><td>${st.sh[c]}</td><td>${won === c ? 'W' : ''}</td></tr>`).join('') +
-      `</table><h6 class="caption">R: material won. H: captures. K: checks. W: the king, which is the only thing that counts.</h6>`;
+    const inn = k ? Math.min(8, Math.floor((k - 1) * 9 / N)) : -1, h = t('sbB');
+    $('#score').innerHTML = `<table class="sb"><tr><th></th>${[1,2,3,4,5,6,7,8,9].map(n => `<th>${n}</th>`).join('')}<th>${h[0]}</th><th>${h[1]}</th><th>${h[2]}</th><th></th></tr>` +
+      [0, 1].map(c => `<tr><td>${esc(c ? g.bs : g.ws)}</td>${st.runs[c].map((r, n) => `<td class="${n === inn ? 'now' : ''}">${n <= inn ? r : ''}</td>`).join('')}<td>${st.runs[c].reduce((a, b) => a + b, 0)}</td><td>${st.tk[c]}</td><td>${st.sh[c]}</td><td>${won === c ? h[3] : ''}</td></tr>`).join('') +
+      `</table><h6 class="caption">${t('sbCap')}</h6>`;
   }
   // the call
   const text = textAt(S.step), parts = text.split('\n');
   const loud = ply && S.step <= N && /[mq]/.test(ply[2]);
-  $('#call').innerHTML = parts.map((t, i) => `<p class="${i ? 'aside' : loud ? 'loud' : ''}">${esc(t)}</p>`).join('');
+  $('#call').innerHTML = parts.map((p, i) => `<p class="${i ? 'aside' : loud ? 'loud' : ''}">${esc(p)}</p>`).join('');
   // transcript (most recent first)
   let tr = '';
   for (let s = Math.min(S.step - 1, N); s >= 1 && s > S.step - 40; s--) {
-    const p = g.plies[s - 1]; tr += `<button data-step="${s}"><span>${stamp(s - 1, N)}</span><span>${Math.ceil(s / 2)}${s % 2 ? '.' : '…'}${p[0]}</span><span>${esc(p[S.sport === 's' ? 6 : 7].split('\n')[0])}</span></button>`;
+    const p = g.plies[s - 1]; tr += `<button data-step="${s}"><span>${stamp(s - 1, N)}</span><span>${Math.ceil(s / 2)}${s % 2 ? '.' : '…'}${san(p[0])}</span><span>${esc(lineAt(g, s - 1).split('\n')[0])}</span></button>`;
   }
   $('#transcript').innerHTML = tr;
   $('#transcript').querySelectorAll('button').forEach(b => b.onclick = () => { stop(); go(+b.dataset.step); });
@@ -193,8 +265,9 @@ function render(animate = true) {
 }
 function ui() {
   if (!S.g) return;
-  $('#play').textContent = S.playing ? 'Pause' : (S.step >= maxStep() ? 'Play again' : 'Play');
-  $('#speed').textContent = `Speed ${S.speed}×`; $('#voice').textContent = `Voice: ${S.voice ? 'on' : 'off'}`; $('#crowd').textContent = `Crowd: ${S.crowd ? 'on' : 'off'}`;
+  $('#play').textContent = S.playing ? t('pause') : (S.step >= maxStep() ? t('again') : t('play'));
+  $('#speed').textContent = `${t('speed')} ${S.speed}×`;
+  $('#voice').textContent = `${t('voice')}: ${S.voice ? t('on') : t('off')}`; $('#crowd').textContent = `${t('crowd')}: ${S.crowd ? t('on') : t('off')}`;
   content.querySelectorAll('[data-sp]').forEach(b => b.classList.toggle('on', b.dataset.sp === S.sport));
   menu.querySelectorAll('[data-sport]').forEach(a => a.classList.toggle('on', a.dataset.sport === S.sport));
 }
@@ -212,22 +285,34 @@ function wait() {
   else S.timer = setTimeout(advance, (900 + len * 42) / S.speed);
 }
 
-/* ---------- the announcer (browser speech) */
+/* ---------- the announcer (browser speech): English booths in GB and US voices, Spanish booths in Spain and Mexico */
 const SPOKEN = { K: 'king', Q: 'queen', R: 'rook', B: 'bishop', N: 'knight' };
-function sayMove(san) {
-  if (san.startsWith('O-O-O')) return 'castles long'; if (san.startsWith('O-O')) return 'castles';
-  let s = san.replace(/[+#]/g, '').replace(/=([QRBN])/, (_, p) => ' promotes to ' + SPOKEN[p]).replace('x', ' takes ');
-  return s.replace(/^[KQRBN]/, m => SPOKEN[m] + ' ');
+const SPOKEN_ES = { R: 'rey', D: 'dama', T: 'torre', A: 'alfil', C: 'caballo' };
+function sayMove(m) {
+  if (m.startsWith('O-O-O')) return 'castles long'; if (m.startsWith('O-O')) return 'castles';
+  let s = m.replace(/[+#]/g, '').replace(/=([QRBN])/, (_, p) => ' promotes to ' + SPOKEN[p]).replace('x', ' takes ');
+  return s.replace(/^[KQRBN]/, p => SPOKEN[p] + ' ');
+}
+function sayMoveES(m) {
+  if (m.startsWith('O-O-O')) return 'enroque largo'; if (m.startsWith('O-O')) return 'enroque corto';
+  let s = m.replace(/[+#]/g, '').replace(/=([DTAC])/, (_, p) => ' corona ' + SPOKEN_ES[p]).replace('x', ' toma ');
+  return s.replace(/^[RDTAC]/, p => SPOKEN_ES[p] + ' ');
 }
 function say(text, ply) {
   if (!window.speechSynthesis) return;
   speechSynthesis.cancel();
-  let t = text.replace(/\n/g, ' ');
-  if (ply) t = t.split(ply[0]).join(sayMove(ply[0]));
-  t = t.replace(/GO{3,}L/g, 'GOAL').replace(/([A-Za-z])\1{3,}/g, '$1$1');
-  const u = new SpeechSynthesisUtterance(t), vs = speechSynthesis.getVoices();
-  const want = S.sport === 's' ? ['en-GB', 'en-IE', 'en-AU'] : ['en-US'];
-  u.voice = vs.find(v => want.includes(v.lang) && /Daniel|Fred|Alex|Google/.test(v.name)) || vs.find(v => want.includes(v.lang)) || null;
+  const es = S.lang === 'es';
+  let tx = text.replace(/\n/g, ' ');
+  if (ply) { const m = san(ply[0]); tx = tx.split(m).join(es ? sayMoveES(m) : sayMove(m)); }
+  if (es) tx = tx.replace(/GO{3,}L/g, 'gol').replace(/[A-ZÁÉÍÓÚÑ]{2,}/g, w => w.toLowerCase()).replace(/[«»]/g, '');
+  else tx = tx.replace(/GO{3,}L/g, 'GOAL');
+  tx = tx.replace(/([A-Za-z])\1{3,}/g, '$1$1');
+  const u = new SpeechSynthesisUtterance(tx), vs = speechSynthesis.getVoices(), lang = v => v.lang.replace('_', '-');
+  const want = es ? (S.sport === 's' ? ['es-ES'] : ['es-MX', 'es-US', 'es-419']) : (S.sport === 's' ? ['en-GB', 'en-IE', 'en-AU'] : ['en-US']);
+  const nice = es ? /Jorge|Juan|Mónica|Paulina|Google/ : /Daniel|Fred|Alex|Google/;
+  u.voice = vs.find(v => want.includes(lang(v)) && nice.test(v.name)) || vs.find(v => want.includes(lang(v)))
+         || (es ? vs.find(v => lang(v).startsWith('es')) : null) || null;
+  u.lang = u.voice ? u.voice.lang : want[0];
   u.rate = (S.sport === 's' ? 1.12 : .96) * Math.min(1.6, Math.max(.8, S.speed)); u.pitch = S.sport === 's' ? 1.1 : .85;
   u.onend = () => { if (S.playing && S.onend) { clearTimeout(S.timer); const f = S.onend; S.onend = null; f(); } };
   speechSynthesis.speak(u);
@@ -255,6 +340,34 @@ const crowd = {
   }
 };
 
+/* ---------- language: ?lang=es in the address, then the last choice, then the browser */
+const store = { get() { try { return localStorage.getItem('bcn-lang'); } catch (e) { return null; } },
+                set(v) { try { localStorage.setItem('bcn-lang', v); } catch (e) {} } };
+function loadSpanish(done) {
+  if (window.GAMES_ES) return done(true);
+  const s = document.createElement('script'); s.src = 'games_es.js?v=20261112';   // bump with index.html when the data changes
+  s.onload = () => done(true); s.onerror = () => done(false);
+  document.head.appendChild(s);
+}
+function labels() {
+  document.documentElement.lang = S.lang;
+  document.querySelectorAll('[data-t]').forEach(el => el.textContent = t(el.dataset.t));
+  menu.querySelectorAll('[data-book]').forEach(a => a.textContent = t('bookLink')[a.dataset.book]);
+  $('#search').placeholder = t('search');
+  document.querySelectorAll('[data-lang]').forEach(b => b.classList.toggle('on', b.dataset.lang === S.lang));
+}
+function setLang(l, first = false) {
+  const apply = ok => {
+    S.lang = ok ? l : 'en'; labels();
+    if (first) return route();
+    S.g ? gamePage(S.g, true) : front();
+  };
+  if (!first) store.set(l);
+  if (window.speechSynthesis) speechSynthesis.cancel();
+  l === 'es' ? loadSpanish(apply) : apply(true);
+}
+document.querySelectorAll('[data-lang]').forEach(b => b.onclick = () => setLang(b.dataset.lang));
+
 /* ---------- routing and keys */
 function route() { const id = +location.hash.slice(1); menu.classList.remove('is-active'); (id >= 1 && id <= G.length) ? gamePage(G[id - 1]) : front(); }
 addEventListener('hashchange', route);
@@ -266,5 +379,6 @@ addEventListener('keydown', e => {
   else if (e.key.toLowerCase() === 's') setSport(S.sport === 's' ? 'b' : 's');
 });
 menu.querySelector('[data-sport="s"]').classList.add('on');
-route();
+const q = new URLSearchParams(location.search).get('lang');
+setLang(q === 'es' || q === 'en' ? q : store.get() || ((navigator.language || '').toLowerCase().startsWith('es') ? 'es' : 'en'), true);
 })();

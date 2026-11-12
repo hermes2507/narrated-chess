@@ -2,12 +2,12 @@
 
 **Software: MIT License** (see `LICENSE`). This covers the code: `build/*.py` except the
 literary text inside `build/styles.py`, plus `web/app.js`, `web/style.css`, `web/index.html` and `index.html`.
-The football and baseball phrase banks in `build/commentary.py` are part of the software.
+The football and baseball phrase banks in `build/commentary.py` and `build/commentary_es.py` are part of the software.
 
 **Book text and design: Creative Commons Attribution 4.0 International (CC BY 4.0).**
-© 2026 Sergio Santiago Rentería Aguilar. This covers the hundred "exercises in style" in `build/styles.py` (and their
-copies in `data/book.json` and `web/games.js`), the book *Play by Play* and its cover (`book/*.pdf`,
-`web/Play_by_Play.pdf`). Licence: <https://creativecommons.org/licenses/by/4.0/>
+© 2026 Sergio Santiago Rentería Aguilar. This covers the hundred "exercises in style" in `build/styles.py` and their Spanish versions in
+`build/styles_es.py` (and their copies in `data/book*.json` and `web/games*.js`), the books *Play by Play* and
+*Jugada a jugada* and their covers (`kdp/*.pdf`, `web/*.pdf`). Licence: <https://creativecommons.org/licenses/by/4.0/>
 
 You are encouraged to copy, share, translate, adapt, perform and build on any of it, for any purpose,
 including commercially. The one condition is attribution: credit the originator, link to the licence,
@@ -27,6 +27,7 @@ No claim is made on them.
 
 - Idea, concept and editorial direction: **Sergio Santiago Rentería Aguilar**.
 - Co-created with **Claude Code** (Claude Fable 5.2, by Anthropic): text, code and typesetting.
+  Spanish edition (site, commentary, exercises, book) co-created with Claude Code (Claude Opus 5.5).
 - Website design: inspired by the [Bureau for Listening](https://bureauforlistening.com)
   (white paper, Times, small monospace labels, a lot of white space). Not affiliated with them.
 - Method: Raymond Queneau, *Exercices de style* (1947).

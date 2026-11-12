@@ -5,32 +5,35 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Bureau for Chess Narration</title>
 <meta name="author" content="Sergio Santiago Rentería Aguilar">
-<meta name="description" content="One hundred historic chess games called move by move as football and baseball, with the book Play by Play.">
-<link rel="stylesheet" href="style.css">
+<meta name="description" content="One hundred historic chess games called move by move as football and baseball, with the book Play by Play. In English and Spanish.">
+<link rel="stylesheet" href="style.css?v=20261112">
 </head>
 <body>
 <header>
   <div class="top-bar">
-    <p><button id="menu-trigger">Table of contents</button></p>
-    <p><a href="#">Bureau for Chess Narration</a></p>
-    <p>For all on the board: narrate!</p>
+    <p><button id="menu-trigger" data-t="toc">Table of contents</button></p>
+    <p><a href="#" data-t="bureau">Bureau for Chess Narration</a></p>
+    <p class="tag" data-t="tagline">For all on the board: narrate!</p>
+    <p class="lang"><button data-lang="en" lang="en" title="English">EN</button> / <button data-lang="es" lang="es" title="Español">ES</button></p>
   </div>
 </header>
 
 <nav id="menu">
-  <a href="#">Front page</a>
-  <a href="Play_by_Play.pdf" download>The book (PDF, download)</a>
-  <a class="plain">Voices</a>
-  <a href="#" class="sub" data-sport="s">Football commentary</a>
-  <a href="#" class="sub" data-sport="b">Baseball commentary</a>
-  <a class="plain">The hundred games</a>
+  <a href="#" data-t="front">Front page</a>
+  <a class="plain" data-t="books">The book</a>
+  <a href="Play_by_Play.pdf" class="sub book" data-book="en" download></a>
+  <a href="Jugada_a_jugada.pdf" class="sub book" data-book="es" download></a>
+  <a class="plain" data-t="voices">Voices</a>
+  <a href="#" class="sub" data-sport="s" data-t="football">Football commentary</a>
+  <a href="#" class="sub" data-sport="b" data-t="baseball">Baseball commentary</a>
+  <a class="plain" data-t="hundred">The hundred games</a>
   <input id="search" type="search" placeholder="search" aria-label="Search the games">
   <div id="toc"></div>
 </nav>
 
 <div class="main-container"><main id="content"></main></div>
 
-<script src="games.js"></script>
-<script src="app.js"></script>
+<script src="games.js?v=20261112"></script>
+<script src="app.js?v=20261112"></script>
 </body>
 </html>

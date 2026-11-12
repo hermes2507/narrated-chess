@@ -15,7 +15,7 @@ h6 { margin: 0 0 .5rem; }
 h6.caption { margin: .5rem 0; color: gray; }
 .gap { height: 9rem; } .gap.s { height: 4rem; }
 
-.top-bar { position: fixed; inset: 0 0 auto 0; z-index: 20; background: #fff; display: flex; justify-content: space-between; padding: 1rem 2rem .5rem; border-bottom: 1px solid silver; height: 2.5rem; }
+.top-bar { position: fixed; inset: 0 0 auto 0; z-index: 20; background: #fff; display: flex; justify-content: space-between; gap: 1rem; padding: 1rem 2rem .5rem; border-bottom: 1px solid silver; height: 2.5rem; }
 .top-bar a:hover, .top-bar button:hover { text-decoration: underline; }
 
 nav#menu { border-right: 1px solid silver; width: 20%; position: fixed; top: 0; left: 0; height: 100vh; padding: 3.8rem 2rem 5rem; overflow-y: auto; background: #fff; z-index: 10; }
@@ -80,6 +80,9 @@ table.sb td.now { background: var(--blue); }
 
 .exercise p { font-size: 1.6rem; line-height: 1.32; white-space: pre-wrap; max-width: 38em; margin-bottom: 1.2rem; }
 .switch button { text-decoration: underline; color: gray; } .switch button.on { color: var(--ink); text-decoration: none; }
+.top-bar .lang { white-space: nowrap; }
+.top-bar .lang button { color: gray; } .top-bar .lang button.on { color: var(--ink); text-decoration: underline; }
+nav#menu a.sub.book { color: var(--ink); }
 
 @media (max-width: 760px) {
   h1 { font-size: 2.4rem; } p { font-size: 1rem; }
@@ -87,7 +90,7 @@ table.sb td.now { background: var(--blue); }
   nav#menu.is-active { transform: none; }
   .main-container { width: 100%; margin-left: 0; padding: 2rem 1rem; }
   .row { display: block; } .column { margin-right: 0; }
-  .top-bar { padding: .7rem 1rem; height: auto; } .top-bar p:last-child { display: none; }
+  .top-bar { padding: .7rem 1rem; height: auto; } .top-bar p.tag { display: none; }
   .call { min-height: 0; } .call p { font-size: 1.6rem; } .call p.loud { font-size: 2.4rem; }
   .exercise p { font-size: 1.2rem; } .gap { height: 4rem; }
 }
