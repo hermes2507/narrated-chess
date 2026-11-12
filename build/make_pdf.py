@@ -28,7 +28,7 @@ INSIDE, OUTSIDE, TOP, BOTTOM = 0.875 * IN, 0.6 * IN, 0.75 * IN, 0.8 * IN
 INK, MOVE, GREY, FAINT, HOTC = black, HexColor('#3d3d3d'), HexColor('#8a8a8a'), HexColor('#cfcfcf'), black
 GLYPH = {'king': '♚', 'queen': '♛', 'rook': '♜', 'bishop': '♝', 'knight': '♞', 'pawn': '♟'}
 RES = {'1-0': '1–0', '0-1': '0–1', '1/2-1/2': '½–½'}
-AUTHOR = 'Santiago Rentería'
+AUTHOR = 'Sergio Santiago Rentería Aguilar'
 YEAR = 2026
 HOT = set('x+#=')
 

@@ -65,7 +65,7 @@ function front() {
   <div class="gap"></div>
   <h6 class="caption">Shots are checks. Tackles and hits are captures. Possession is mobility. Runs are material. The patter is invented; the moves are not.</h6>
   <div class="gap s"></div>
-  <h6 class="caption">Idea and concept by Santiago Rentería, co-created with Claude Code (Claude Fable 5.2). Design after the <a class="u" href="https://bureauforlistening.com">Bureau for Listening</a>. Free to copy and adapt, with credit: book text under <a class="u" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>, code under the MIT License.</h6>`;
+  <h6 class="caption">Idea and concept by Sergio Santiago Rentería Aguilar, co-created with Claude Code (Claude Fable 5.2). Design after the <a class="u" href="https://bureauforlistening.com">Bureau for Listening</a>. Free to copy and adapt, with credit: book text under <a class="u" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>, code under the MIT License.</h6>`;
   document.title = 'Bureau for Chess Narration';
 }
 

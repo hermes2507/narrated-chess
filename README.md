@@ -2,7 +2,7 @@
 
 One hundred historic chess games (1834–2023), in two forms.
 
-Idea and concept by **Santiago Rentería**, co-created with **Claude Code** (Claude Fable 5.2).
+Idea and concept by **Sergio Santiago Rentería Aguilar**, co-created with **Claude Code** (Claude Fable 5.2).
 
 ## Web: Bureau for Chess Narration
 Open `web/index.html` in a browser (no server needed), or visit the GitHub Pages site.
@@ -38,4 +38,4 @@ rain, sunburst). Right pages: the game retold in the manner of a different autho
 - Method after Raymond Queneau, *Exercices de style* (1947). Game scores from public archives, mainly pgnmentor.com.
 - **Copy it, remix it, pass it on.** Code: MIT License (`LICENSE`). Book text and PDFs:
   [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), so anything is allowed, even selling, as long as you credit
-  Santiago Rentería and say what you changed. `NOTICE.md` has the details and a ready-made credit line.
+  Sergio Santiago Rentería Aguilar and say what you changed. `NOTICE.md` has the details and a ready-made credit line.
