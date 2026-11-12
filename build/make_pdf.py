@@ -28,6 +28,8 @@ INSIDE, OUTSIDE, TOP, BOTTOM = 0.875 * IN, 0.6 * IN, 0.75 * IN, 0.8 * IN
 INK, MOVE, GREY, FAINT, HOTC = black, HexColor('#3d3d3d'), HexColor('#8a8a8a'), HexColor('#cfcfcf'), black
 GLYPH = {'king': '♚', 'queen': '♛', 'rook': '♜', 'bishop': '♝', 'knight': '♞', 'pawn': '♟'}
 RES = {'1-0': '1–0', '0-1': '0–1', '1/2-1/2': '½–½'}
+AUTHOR = 'Santiago Rentería'
+YEAR = 2026
 HOT = set('x+#=')
 
 
@@ -266,7 +268,9 @@ def choose_form(g):
 class Book:
     def __init__(self, path):
         self.c = canvas.Canvas(path, pagesize=(PW, PH), initialFontName='Serif')
-        self.c.setTitle('Play by Play: One Hundred Chess Games, One Hundred Voices'); self.c.setAuthor('Chess Narrator')
+        self.c.setTitle('Play by Play: One Hundred Chess Games, One Hundred Voices'); self.c.setAuthor(AUTHOR)
+        self.c.setSubject('Concrete poems and exercises in style on one hundred historic chess games')
+        self.c.setCreator(f'{AUTHOR}, with Claude Code (Claude Fable 5.2)')
         self.n = 1
 
     @property
@@ -377,17 +381,34 @@ def front_matter(b, book):
     p = Paragraph("The scores of a hundred historic games,<br/>set as concrete poetry.<br/>The games themselves, told a hundred ways:<br/>"
                   "<font name='SerifI'>exercises in style, after Raymond Queneau.</font>", st)
     w, h = p.wrap(b.width(), 300); p.drawOn(c, L, PH - 4.85 * IN - h)
+    c.setFillColor(INK); c.setFont('Didot', 20); c.drawString(L, BOTTOM + 0.55 * IN, AUTHOR)
     c.setFillColor(GREY); spaced(c, L, BOTTOM, "1834 — 2023", 'Mono', 7, 1.8)
     b.next()
     # p2 colophon
-    st = ParagraphStyle('n', fontName='Serif', fontSize=9.2, leading=13.4, textColor=INK, spaceAfter=7)
-    y = BOTTOM + 2.6 * IN
-    for t in ["<font name='SerifB'>Play by Play</font><br/>One Hundred Chess Games, One Hundred Voices",
-              "The hundred games in this book were really played. Their scores are reproduced complete in standard algebraic notation and every move was checked for legality.",
-              "The hundred prose pieces and poems are pastiches written for this book. Each imitates the manner of a named author; none quotes from any author's work, and none was written, seen or approved by the author it imitates. Scenes, weather, dialogue and inner thoughts are invented.",
-              "Set in Baskerville, Didot and Courier New.",
-              "First edition."]:
-        p = Paragraph(t, st); w, h = p.wrap(b.width() - 60, 500); y -= h; p.drawOn(c, b.left(), y); y -= 7
+    st = ParagraphStyle('n', fontName='Serif', fontSize=8.6, leading=12.4, textColor=INK)
+    paras = [Paragraph(t, st) for t in [
+        "<font name='SerifB'>Play by Play</font><br/>One Hundred Chess Games, One Hundred Voices",
+        f"Copyright © {YEAR} {AUTHOR}. All rights reserved. No part of this book may be reproduced in any form "
+        "without written permission from the author, except for brief quotations in reviews.",
+        f"Idea, concept and editorial direction by {AUTHOR}. Written, programmed and typeset in co-creation "
+        "with Claude Code (Claude Fable 5.2, by Anthropic).",
+        "The hundred games were really played. Their scores, which are matters of record, are reproduced complete "
+        "in standard algebraic notation, and every move was checked for legality. Scores were gathered from public "
+        "game archives, chiefly pgnmentor.com.",
+        "The hundred prose pieces and poems are pastiches and parodies written for this book. Each imitates the manner "
+        "of a named author, and many borrow a famous phrase or opening line of that author, turned toward chess; none "
+        "reproduces a longer passage. None was written, seen or endorsed by the author it imitates, or by any estate or publisher.",
+        "The players appear under their own names. Moves, results, places and dates are as recorded. The scenes, weather, "
+        "dialogue, thoughts and feelings given to them are invented, and no word put in a player's mouth should be taken as a quotation.",
+        "The method is borrowed from Raymond Queneau's <font name='SerifI'>Exercices de style</font> (1947). "
+        "The companion website, the Bureau for Chess Narration, takes its look from the Bureau for Listening (bureauforlistening.com).",
+        "The software that built this book is free under the MIT License. The text and design of the book are not.",
+        "Set in Baskerville, Didot and Courier New.",
+        f"First edition, {YEAR}."]]
+    hs = [p.wrap(b.width() - 40, 500)[1] for p in paras]
+    y = BOTTOM + sum(hs) + 6 * (len(hs) - 1)
+    for p, h in zip(paras, hs):
+        y -= h; p.drawOn(c, b.left(), y); y -= 6
     b.next()
     # p3 how to read
     st = ParagraphStyle('n', fontName='Serif', fontSize=10.4, leading=15, alignment=TA_JUSTIFY, textColor=INK)
@@ -398,7 +419,7 @@ def front_matter(b, book):
         "The marks of contact, <font name='MonoB'>x</font> for a capture, <font name='MonoB'>+</font> for a check, <font name='MonoB'>#</font> for mate, are set blacker than the moves around them. The score takes one of six forms.",
         "<font name='SerifI'>Calligram.</font> The score is poured into the silhouette of the piece that made the final move. A short game echoes in grey until the figure is full.",
         "<font name='SerifI'>Spiral.</font> One unbroken line, wound clockwise and inward. The last move arrives at the centre, where the result waits.",
-        "<font name='SerifI'>River.</font> White's moves on the left bank, Black's on the right. The channel bends toward the side that is ahead in material, and moves grow with their violence.",
+        "<font name='SerifI'>River.</font> White's moves on the left bank, Black's on the right. The channel is pushed toward the side that is behind in material, so the leader's bank widens, and moves grow with their violence.",
         "<font name='SerifI'>Sixty-four squares.</font> Each move is written on the square where it landed. Empty squares were never visited. The last move is reversed out of black.",
         "<font name='SerifI'>Rain.</font> The files are columns and time is gravity. A thread follows the play from one destination to the next, like a ball being passed.",
         "<font name='SerifI'>Sunburst.</font> A clock of moves, read clockwise from noon. The louder the move, the farther it stands from the centre.", "",
@@ -458,6 +479,7 @@ def draw_front(c, book, fx, fy):
     c.setFont('DidotI', 60); c.drawString(fx + 0.7 * IN, fy + PH - 1.55 * IN, "Play")
     c.setFont('Didot', 60); c.drawString(fx + 0.7 * IN + sw("Play ", 'DidotI', 60), fy + PH - 1.55 * IN, "by Play")
     spaced(c, fx + 0.72 * IN, fy + PH - 1.95 * IN, "ONE HUNDRED CHESS GAMES · ONE HUNDRED VOICES", 'Mono', 7.6, 1.9)
+    c.setFont('Didot', 22); c.drawString(fx + 0.7 * IN, fy + PH - 2.6 * IN, AUTHOR)
     spaced(c, fx + 0.72 * IN, fy + 0.6 * IN, "CONCRETE POEMS & EXERCISES IN STYLE", 'Mono', 7, 1.9)
     _cover_ink(False)
 
@@ -470,7 +492,7 @@ def draw_back(c, bx, by, barcode=True):
                   "<font name='SerifI'>Exercises in style</font> for sixty-four squares.", st)
     w, h = p.wrap(PW - 1.8 * IN, 600); p.drawOn(c, bx + 0.9 * IN, by + PH - 1.4 * IN - h)
     if barcode:
-        c.setFillColor(white); c.rect(bx + PW - 2.75 * IN, by + 0.5 * IN, 2 * IN, 1.2 * IN, stroke=0, fill=1)
+        c.setFillColor(white); c.rect(bx + PW - 2.25 * IN, by + 0.25 * IN, 2 * IN, 1.2 * IN, stroke=0, fill=1)
 
 
 def cover(book, pages):
@@ -484,7 +506,8 @@ def cover(book, pages):
     draw_front(c, book, bleed + PW + spine, bleed)
     c.setFillColor(PAPERWHITE)
     c.saveState(); c.translate(bleed + PW + spine / 2 - 3.5, bleed + PH - 0.7 * IN); c.rotate(-90)
-    c.setFont('DidotI', 11); c.drawString(0, 0, "Play by Play"); c.restoreState()
+    c.setFont('DidotI', 11); c.drawString(0, 0, "Play by Play")
+    c.setFont('Didot', 9); c.drawRightString(PH - 1.4 * IN, 0, AUTHOR); c.restoreState()
     draw_back(c, bleed, bleed)
     c.save()
     print(out, f"spine {spine / IN:.3f} in for {pages} pages")

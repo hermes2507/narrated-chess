@@ -1,6 +1,8 @@
-# Chess Narrator
+# Narrated Chess
 
 One hundred historic chess games (1834–2023), in two forms.
+
+Idea and concept by **Santiago Rentería**, co-created with **Claude Code** (Claude Fable 5.2).
 
 ## Web: Bureau for Chess Narration
 Open `web/index.html` in a browser (no server needed), or visit the GitHub Pages site.
@@ -30,3 +32,9 @@ rain, sunburst). Right pages: the game retold in the manner of a different autho
 - `build/commentary.py` — football and baseball phrase banks
 - `build/index_raw.py`, `build/select_games.py` — only needed to re-pick games from
   pgnmentor.com player archives (the raw downloads were removed).
+
+## Credits and licence
+- Website design inspired by the [Bureau for Listening](https://bureauforlistening.com). Not affiliated.
+- Method after Raymond Queneau, *Exercices de style* (1947). Game scores from public archives, mainly pgnmentor.com.
+- **Code:** MIT License (`LICENSE`). **Book text and PDFs:** © 2026 Santiago Rentería, all rights reserved.
+  `NOTICE.md` says exactly which files fall under each.

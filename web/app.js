@@ -63,7 +63,9 @@ function front() {
   <h1>Today's fixture</h1>
   <p><a href="#${g.id}">${esc(g.nick)}. ${esc(g.white)} — ${esc(g.black)}, ${esc(g.site)}, ${g.year}.</a></p>
   <div class="gap"></div>
-  <h6 class="caption">Shots are checks. Tackles and hits are captures. Possession is mobility. Runs are material. The patter is invented; the moves are not.</h6>`;
+  <h6 class="caption">Shots are checks. Tackles and hits are captures. Possession is mobility. Runs are material. The patter is invented; the moves are not.</h6>
+  <div class="gap s"></div>
+  <h6 class="caption">Idea and concept by Santiago Rentería, co-created with Claude Code (Claude Fable 5.2). Design after the <a class="u" href="https://bureauforlistening.com">Bureau for Listening</a>. Code under the MIT License; book text © 2026 Santiago Rentería, all rights reserved.</h6>`;
   document.title = 'Bureau for Chess Narration';
 }
 
@@ -100,7 +102,7 @@ function gamePage(g) {
     <h6>Exercise in style No. ${g.id} — the same game, in the manner of ${esc(g.author)}</h6>
     <div class="gap s"></div>
     ${g.exercise.split('\n\n').map(t => `<p>${esc(t)}</p>`).join('')}
-    <h6 class="caption">A pastiche written for the Bureau. Not a word of it is by ${esc(g.author)}.</h6>
+    <h6 class="caption">A pastiche written for the Bureau. It may borrow a famous phrase, as parody; it was not written by ${esc(g.author)}. Players' words and thoughts are invented.</h6>
   </div>
   <div class="gap s"></div>
   <p><a href="Play_by_Play.pdf" download>Download the book (PDF, with cover).</a></p>
