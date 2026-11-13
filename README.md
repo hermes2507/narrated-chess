@@ -19,11 +19,11 @@ remembered; `?lang=es` in the address forces it; Spanish-language browsers start
 The Spanish texts live in `web/games_es.js`, loaded only when needed.
 
 ## Book: Play by Play / Jugada a jugada
-- `kdp/` — **print-ready files for Amazon KDP**, both languages: `*_KDP_interior.pdf` (7 × 10 in, 206 pages,
+- `kdp/` — **print-ready files for Amazon KDP**, both languages: `*_KDP_interior.pdf` (7 × 10 in, 208 pages,
   black and white, no bleed, mirrored margins, all fonts embedded) and `*_KDP_cover.pdf` (wrap cover with
-  0.125 in bleed and a 0.464 in spine). `kdp/KDP_SETUP.md` has the exact KDP settings and the text to paste in.
+  0.125 in bleed and a 0.468 in spine). `kdp/KDP_SETUP.md` has the exact KDP settings and the text to paste in.
 - `web/Play_by_Play.pdf` — reading edition for download: front cover + interior + back cover
-  in one file (208 pages). This is what the site links to.
+  in one file (210 pages). This is what the site links to.
 - `web/Jugada_a_jugada.pdf` — the Spanish reading edition, same layout and page count, scores in Spanish notation.
 
 **Edition:** both books are the *first edition, November 2026*, printed on the title page, colophon,
